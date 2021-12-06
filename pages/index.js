@@ -9,7 +9,6 @@ export default function Home() {
       <div>
         <h1>Row of list of featured products slide</h1>
         <h1>Popular products grid</h1>
-        <h1>Footer</h1>
       </div>
     </Layouts>
   );
