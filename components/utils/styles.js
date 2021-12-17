@@ -18,7 +18,7 @@ export const myStyles = makeStyles({
     flexGrow: 1,
   },
   main: {
-    height: "80vh",
+    minHeight: "80vh",
   },
   footer: {
     marginTop: 15,

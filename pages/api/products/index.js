@@ -4,14 +4,10 @@ import Product from "../../../model/Product";
 
 const handler = nc();
 
-const productData = async () =>
-  await fetch("https://fakestoreapi.com/products").then((res) => res.json());
-
 handler.get(async (req, res) => {
   await db.connect();
-  await Product.deleteMany();
-  await Product.insertMany(productData);
+  const products = await Product.find({});
   await db.disconnect();
-  res.send({ message: "seeded " });
+  res.send(products);
 });
 export default handler;

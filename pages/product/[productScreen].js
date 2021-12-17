@@ -1,6 +1,3 @@
-import { useRouter } from "next/router";
-//import { getData } from "../../components/utils/data";
-import React, { useEffect, useState } from "react";
 import Layouts from "../../components/Layouts";
 import NextLink from "next/link";
 import {
@@ -14,9 +11,25 @@ import {
 } from "@material-ui/core";
 import { myStyles } from "../../components/utils/styles";
 import Image from "next/image";
+import db from "../../components/utils/db";
+import Product from "../../model/Product";
+import { Store } from "../../components/utils/store";
+import { useContext } from "react";
 
-export default function ProductScreen({ product }) {
+export default function ProductScreen({ product, params }) {
   const classes = myStyles();
+  const { dispatch } = useContext(Store);
+
+  console.log("pto6", product, params);
+
+  const addToCartHandler = async () => {
+    const data = await fetch(`/api/products/${product._id}`);
+    console.log("d", data);
+    // if (data.rating.count <= 0) {
+    //   window.alert("Product out of stock");
+    // }
+    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity: 1 } });
+  };
 
   return (
     <Layouts title={product.title} description={product.description}>
@@ -81,7 +94,11 @@ export default function ProductScreen({ product }) {
                 </Grid>
               </ListItem>
               <ListItem>
-                <Button fullWidth variant="contained" color="primary">
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={addToCartHandler}>
                   Add to cart
                 </Button>
               </ListItem>
@@ -93,34 +110,18 @@ export default function ProductScreen({ product }) {
   );
 }
 
-export const getStaticPaths = async () => {
-  const productList = await fetch("https://fakestoreapi.com/products").then(
-    (res) => res.json()
-  );
-  return {
-    fallback: false,
-    paths: productList.map((product) => ({
-      params: {
-        productScreen: product.id.toString(),
-      },
-    })),
-  };
-};
+export const getServerSideProps = async (context) => {
+  const { params } = context;
+  const { productScreen } = params;
 
-export const getStaticProps = async (ctx) => {
-  const productId = ctx.params.productScreen;
+  console.log("p", params);
 
-  const productList = await fetch("https://fakestoreapi.com/products").then(
-    (res) => res.json()
-  );
-
-  const singleProduct = productList.find(
-    (product) => product.id === Number(productId)
-  );
-
+  await db.connect();
+  const singleProduct = await Product.findOne({ _id: productScreen }).lean();
+  await db.disconnect();
   return {
     props: {
-      product: singleProduct,
+      product: db.convertDocTObj(singleProduct),
     },
   };
 };

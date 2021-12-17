@@ -9,9 +9,10 @@ import {
   Typography,
 } from "@material-ui/core";
 import NextLink from "next/link";
-import { useEffect, useState } from "react";
 import Layouts from "../components/Layouts";
+import db from "../components/utils/db";
 import { myStyles } from "../components/utils/styles";
+import Product from "../model/Product";
 //import { getData } from "../components/utils/data";
 
 export default function Home({ products }) {
@@ -25,7 +26,7 @@ export default function Home({ products }) {
           {products.map((product) => (
             <Grid item md={4} key={product.title}>
               <Card className={classes.card}>
-                <NextLink href={`/product/${product.id}`} passHref>
+                <NextLink href={`/product/${product._id}`} passHref>
                   <CardActionArea>
                     <CardMedia
                       className={classes.image}
@@ -52,14 +53,13 @@ export default function Home({ products }) {
   );
 }
 
-export const getStaticProps = async () => {
-  const productList = await fetch("https://fakestoreapi.com/products").then(
-    (res) => res.json()
-  );
-
+export const getServerSideProps = async () => {
+  await db.connect();
+  const productList = await Product.find({}).lean();
+  await db.disconnect();
   return {
     props: {
-      products: productList,
+      products: productList.map(db.convertDocTObj),
     },
   };
 };
