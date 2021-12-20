@@ -15,20 +15,25 @@ import db from "../../components/utils/db";
 import Product from "../../model/Product";
 import { Store } from "../../components/utils/store";
 import { useContext } from "react";
+import { useRouter } from "next/router";
 
 export default function ProductScreen({ product, params }) {
+  const router = useRouter();
   const classes = myStyles();
   const { dispatch } = useContext(Store);
 
   console.log("pto6", product, params);
 
   const addToCartHandler = async () => {
-    const data = await fetch(`/api/products/${product._id}`);
+    const data = await fetch(`/api/products/${product._id}`).then((res) =>
+      res.json()
+    );
     console.log("d", data);
-    // if (data.rating.count <= 0) {
-    //   window.alert("Product out of stock");
-    // }
+    if (data.rating.count <= 0) {
+      window.alert("Product out of stock");
+    }
     dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity: 1 } });
+    router.push("/cart");
   };
 
   return (
