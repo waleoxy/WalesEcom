@@ -21,8 +21,10 @@ import { Store } from "../components/utils/store";
 import NextLink from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 
 function CartScreen() {
+  const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const {
     cart: { cartItems },
@@ -41,6 +43,10 @@ function CartScreen() {
   const removeCartHandler = (item) => {
     console.log("clicked");
     dispatch({ type: "CART_REMOVE_ITEM", payload: item });
+  };
+
+  const checkoutHandler = () => {
+    router.push("/shipping");
   };
 
   return (
@@ -76,9 +82,7 @@ function CartScreen() {
                   {cartItems.map((item) => (
                     <TableRow key={item._id}>
                       <TableCell>
-                        <NextLink
-                          href={`/product/${item.productScreen}`}
-                          passHref>
+                        <NextLink href={`/product/${item._id}`} passHref>
                           <Link>
                             <Image
                               src={item.image}
@@ -90,9 +94,7 @@ function CartScreen() {
                         </NextLink>
                       </TableCell>
                       <TableCell>
-                        <NextLink
-                          href={`/product/${item.productScreen}`}
-                          passHref>
+                        <NextLink href={`/product/${item._id}`} passHref>
                           <Link>
                             <Typography>{item.title}</Typography>
                           </Link>
@@ -100,7 +102,7 @@ function CartScreen() {
                       </TableCell>
                       <TableCell align="right">
                         <Select
-                          value={item.quatity}
+                          value={item.quantity}
                           onChange={(e) =>
                             updateCartHandler(item, e.target.value)
                           }>
@@ -137,7 +139,11 @@ function CartScreen() {
                   </Typography>
                 </ListItem>
                 <ListItem>
-                  <Button variant="contained" color="primary" fullWidth>
+                  <Button
+                    onClick={checkoutHandler}
+                    variant="contained"
+                    color="primary"
+                    fullWidth>
                     Checkout
                   </Button>
                 </ListItem>

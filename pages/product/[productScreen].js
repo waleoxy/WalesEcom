@@ -20,19 +20,19 @@ import { useRouter } from "next/router";
 export default function ProductScreen({ product, params }) {
   const router = useRouter();
   const classes = myStyles();
-  const { dispatch } = useContext(Store);
-
-  console.log("pto6", product, params);
+  const { state, dispatch } = useContext(Store);
 
   const addToCartHandler = async () => {
+    const existItem = state.cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
     const data = await fetch(`/api/products/${product._id}`).then((res) =>
       res.json()
     );
-    console.log("d", data);
-    if (data.rating.count <= 0) {
+
+    if (data.rating.count < quantity) {
       window.alert("Product out of stock");
     }
-    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity: 1 } });
+    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
     router.push("/cart");
   };
 

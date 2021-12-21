@@ -1,5 +1,4 @@
 import { makeStyles } from "@material-ui/core";
-import { blue, blueGrey } from "@material-ui/core/colors";
 
 export const myStyles = makeStyles({
   navbar: {
@@ -46,5 +45,9 @@ export const myStyles = makeStyles({
     paddingBlock: 5,
     textAlign: "center",
     backgroundColor: "#e5e5e5",
+  },
+  form: {
+    maxWidth: 800,
+    margin: "0 auto",
   },
 });

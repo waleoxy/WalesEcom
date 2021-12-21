@@ -9,15 +9,35 @@ import {
   Typography,
 } from "@material-ui/core";
 import NextLink from "next/link";
+import { useContext } from "react";
 import Layouts from "../components/Layouts";
 import db from "../components/utils/db";
+import { Store } from "../components/utils/store";
 import { myStyles } from "../components/utils/styles";
 import Product from "../model/Product";
+import { useRouter } from "next/router";
 //import { getData } from "../components/utils/data";
 
 export default function Home({ products }) {
   const classes = myStyles();
-  console.log("ps", products);
+
+  const { state, dispatch } = useContext(Store);
+  const router = useRouter();
+
+  const addToCartHandler = async (product) => {
+    const existItem = state.cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const data = await fetch(`/api/products/${product._id}`).then((res) =>
+      res.json()
+    );
+
+    if (data.rating.count < quantity) {
+      window.alert("Product out of stock");
+    }
+    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
+    router.push("/cart");
+  };
+
   return (
     <Layouts>
       <div>
@@ -40,7 +60,10 @@ export default function Home({ products }) {
                 </NextLink>
                 <CardActions>
                   <Typography>$ {product.price}</Typography>
-                  <Button size="small" color="primary">
+                  <Button
+                    size="small"
+                    color="primary"
+                    onClick={() => addToCartHandler(product)}>
                     Add to cart
                   </Button>
                 </CardActions>
