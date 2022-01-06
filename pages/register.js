@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layouts from "../components/Layouts";
 import { myStyles } from "../components/utils/styles";
 import NextLink from "next/link";
@@ -17,7 +17,7 @@ import Cookies from "js-cookie";
 import { Controller, useForm } from "react-hook-form";
 import { useSnackbar } from "notistack";
 
-function Login() {
+function Register() {
   const classes = myStyles();
 
   const {
@@ -25,7 +25,6 @@ function Login() {
     control,
     formState: { errors },
   } = useForm();
-
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const { state, dispatch } = useContext(Store);
@@ -40,30 +39,65 @@ function Login() {
     }
   }, []);
 
-  const submitHandler = async ({ email, password }) => {
-    try {
-      const { data } = await axios.post("/api/users/login", {
-        email,
-        password,
-      });
-      dispatch({ type: "USER_LOGIN", payload: data });
-      Cookies.set("userInfo", data);
-      router.push(redirect || "/");
-    } catch (error) {
-      enqueueSnackbar(
-        error.response.data ? error.response.data.message : error.message,
-        { variant: "error" }
-      );
+  const submitHandler = async ({ name, email, password, confirmPassword }) => {
+    if (password !== confirmPassword) {
+      closeSnackbar();
+      enqueueSnackbar("Passwords didnt match", { variant: "errors" });
+      return;
+    } else {
+      try {
+        const { data } = await axios.post("/api/users/register", {
+          name,
+          email,
+          password,
+          confirmPassword,
+        });
+        dispatch({ type: "USER_LOGIN", payload: data });
+        Cookies.set("userInfo", data);
+        router.push(redirect || "/");
+      } catch (error) {
+        enqueueSnackbar(
+          error.response.data ? error.response.data.message : error.message,
+          { variant: "errors" }
+        );
+      }
     }
   };
 
   return (
-    <Layouts title="Login">
+    <Layouts title="Register">
       <form onSubmit={handleSubmit(submitHandler)} className={classes.form}>
         <Typography component="h1" variant="h1">
-          Login
+          Register
         </Typography>
         <List>
+          <ListItem>
+            <Controller
+              name="name"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: true,
+                minLength: 2,
+              }}
+              render={({ field }) => (
+                <TextField
+                  id="name"
+                  fullWidth
+                  label="Name"
+                  variant="outlined"
+                  InputProps={{ type: "name" }}
+                  error={Boolean(errors.name)}
+                  helperText={
+                    errors.name
+                      ? errors.name.type === "minLength"
+                        ? "Name should be more than 2"
+                        : "Name is required"
+                      : ""
+                  }
+                  {...field}></TextField>
+              )}></Controller>
+          </ListItem>
           <ListItem>
             <Controller
               name="email"
@@ -119,14 +153,41 @@ function Login() {
               )}></Controller>{" "}
           </ListItem>
           <ListItem>
+            <Controller
+              name="confirmPassword"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: true,
+                minLength: 6,
+              }}
+              render={({ field }) => (
+                <TextField
+                  id="confirmPassword"
+                  fullWidth
+                  label="Confirm Password"
+                  variant="outlined"
+                  InputProps={{ type: "password" }}
+                  error={Boolean(errors.confirmPassword)}
+                  helperText={
+                    errors.confirmPassword
+                      ? errors.confirmPassword.type === "minLength"
+                        ? "Confirm Password should be more than 5"
+                        : "Confirm Password is required"
+                      : ""
+                  }
+                  {...field}></TextField>
+              )}></Controller>
+          </ListItem>
+          <ListItem>
             <Button variant="contained" type="submit" fullWidth color="primary">
-              Login
+              Register
             </Button>
           </ListItem>
           <ListItem>
-            Don't have an account?
-            <NextLink href={`/register?redirect=${redirect || "/"}`} passHref>
-              <Link> Register</Link>
+            Already have an account?
+            <NextLink href={`/login?redirect=${redirect || "/"}`} passHref>
+              <Link> Login</Link>
             </NextLink>
           </ListItem>
         </List>
@@ -135,4 +196,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;
