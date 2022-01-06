@@ -50,4 +50,8 @@ export const myStyles = makeStyles({
     maxWidth: 800,
     margin: "0 auto",
   },
+  navbtn: {
+    color: "#ffffff",
+    textTransform: "capitalize",
+  },
 });
