@@ -10,10 +10,12 @@ const initialState = {
       ? JSON.parse(Cookies.get("cartItems"))
       : [],
     shippingAddress: Cookies.get("shippingAddress")
-      ? Cookies.get("shippingAddress")
+      ? JSON.parse(Cookies.get("shippingAddress"))
       : {},
   },
-  userInfo: Cookies.get("userInfo") ? Cookies.get("userInfo") : null,
+  userInfo: Cookies.get("userInfo")
+    ? JSON.parse(Cookies.get("userInfo"))
+    : null,
 };
 
 const reducer = (state, action) => {

@@ -40,10 +40,10 @@ function Shipping() {
       router.push("/login?redirect=/shipping");
     }
     setValue("fullName", shippingAddress.fullName);
-    setValue("fullName", shippingAddress.address);
-    setValue("fullName", shippingAddress.city);
-    setValue("fullName", shippingAddress.postalCode);
-    setValue("fullName", shippingAddress.country);
+    setValue("address", shippingAddress.address);
+    setValue("city", shippingAddress.city);
+    setValue("postalCode", shippingAddress.postalCode);
+    setValue("country", shippingAddress.country);
   }, []);
 
   const submitHandler = ({ fullName, address, city, postalCode, country }) => {
@@ -51,13 +51,16 @@ function Shipping() {
       type: "SAVE_SHIPPING_ADDRESS",
       payload: { fullName, address, city, postalCode, country },
     });
-    Cookies.set("shippingAddress", {
-      fullName,
-      address,
-      city,
-      postalCode,
-      country,
-    });
+    Cookies.set(
+      "shippingAddress",
+      JSON.stringify({
+        fullName,
+        address,
+        city,
+        postalCode,
+        country,
+      })
+    );
     router.push("/payment");
   };
 
