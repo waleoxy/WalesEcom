@@ -35,16 +35,13 @@ export const myStyles = makeStyles({
     objectFit: "contain",
   },
   section: {
-    marginTop: 15,
-    marginBottom: 15,
-    textTransform: "uppercase",
-    border: "1px solid black",
-    borderRadius: 15,
-    width: 155,
+    marginTop: 10,
+    marginBottom: 10,
+    textTransform: "capitalize",
+    borderRadius: 10,
     paddingInline: 5,
     paddingBlock: 5,
     textAlign: "center",
-    backgroundColor: "#e5e5e5",
   },
   form: {
     maxWidth: 800,
@@ -53,5 +50,8 @@ export const myStyles = makeStyles({
   navbtn: {
     color: "#ffffff",
     textTransform: "capitalize",
+  },
+  transparentbg: {
+    backgroundColor: "transparent",
   },
 });

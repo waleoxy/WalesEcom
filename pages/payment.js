@@ -5,6 +5,7 @@ import { Store } from "../components/utils/store";
 import Layouts from "../components/Layouts";
 import CheckoutHelper from "../components/CheckoutHelper";
 import { myStyles } from "../components/utils/styles";
+import { useSnackbar } from "notistack";
 import {
   Button,
   FormControl,
@@ -18,6 +19,7 @@ import {
 
 function Payment() {
   const classes = myStyles();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const router = useRouter();
   const [paymentMethod, setPaymentMethod] = useState("");
   const { state, dispatch } = useContext(Store);
@@ -29,12 +31,20 @@ function Payment() {
     if (!shippingAddress.address) {
       router.push("/shipping");
     } else {
-      setPaymentMethod(Cookies.get("paymentMathod") || "");
+      setPaymentMethod(Cookies.get("paymentMethod") || "");
     }
   }, []);
 
   const submitHandler = (e) => {
+    closeSnackbar();
     e.preventDefault();
+    if (!paymentMethod) {
+      enqueueSnackbar("A payment method is required", { variant: "error" });
+    } else {
+      dispatch({ type: "SAVE_PAYMENT_METHOD", payload: paymentMethod });
+      Cookies.set("paymentMethod", paymentMethod);
+      router.push("/placeOrder");
+    }
   };
 
   return (
@@ -68,7 +78,7 @@ function Payment() {
             </FormControl>
           </ListItem>
           <ListItem>
-            <Button fullWidth type="submit" variant="outlined" color="primary">
+            <Button fullWidth type="submit" variant="contained" color="primary">
               Continue
             </Button>
           </ListItem>
@@ -76,7 +86,7 @@ function Payment() {
             <Button
               fullWidth
               type="button"
-              variant="outlined"
+              variant="contained"
               onClick={() => router.push("/shipping")}>
               Back
             </Button>
