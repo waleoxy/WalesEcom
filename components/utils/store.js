@@ -54,7 +54,11 @@ const reducer = (state, action) => {
       return { ...state, userInfo: action.payload };
     }
     case "USER_LOGOUT": {
-      return { ...state, userInfo: null, cart: { cartItems: [] } };
+      return {
+        ...state,
+        userInfo: null,
+        cart: { cartItems: [], shippingAddress: {}, paymentMethod: "" },
+      };
     }
     case "SAVE_SHIPPING_ADDRESS": {
       return {
@@ -66,6 +70,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         cart: { ...state.cart, paymentMethod: action.payload },
+      };
+    }
+    case "CLEAR_CART": {
+      return {
+        ...state,
+        cart: { ...state.cart, cartItems: [] },
       };
     }
     default:

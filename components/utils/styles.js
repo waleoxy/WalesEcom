@@ -54,4 +54,7 @@ export const myStyles = makeStyles({
   transparentbg: {
     backgroundColor: "transparent",
   },
+  error: {
+    color: "#f03050",
+  },
 });
