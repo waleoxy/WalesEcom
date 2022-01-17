@@ -118,9 +118,6 @@ export default function ProductScreen({ product, params }) {
 export const getServerSideProps = async (context) => {
   const { params } = context;
   const { productScreen } = params;
-
-  console.log("p", params);
-
   await db.connect();
   const singleProduct = await Product.findOne({ _id: productScreen }).lean();
   await db.disconnect();

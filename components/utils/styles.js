@@ -57,4 +57,7 @@ export const myStyles = makeStyles({
   error: {
     color: "#f03050",
   },
+  fullWidth: {
+    width: "100%",
+  },
 });
