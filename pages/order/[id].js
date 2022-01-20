@@ -1,5 +1,4 @@
 import {
-  Button,
   Grid,
   Table,
   TableBody,
@@ -19,11 +18,9 @@ import NextLink from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import CheckoutHelper from "../../components/CheckoutHelper";
 import { useSnackbar } from "notistack";
 import { getError } from "../../components/utils/error";
 import axios from "axios";
-import Cookies from "js-cookie";
 import Layouts from "../../components/Layouts";
 import { Store } from "../../components/utils/store";
 import { myStyles } from "../../components/utils/styles";
@@ -43,6 +40,8 @@ const reducer = (state, action) => {
       return { ...state, loadingPay: false, successPay: true };
     case "PAY_FAIL":
       return { ...state, loadingPay: false, errorPay: action.payload };
+    case "PAY_RESET":
+      return { ...state, loadingPay: false, successPay: false, errorPay: "" };
     default:
       state;
   }
@@ -59,11 +58,14 @@ function Order({ params }) {
   const { state } = useContext(Store);
   const { userInfo } = state;
 
-  const [{ loading, error, order }, dispatch] = useReducer(reducer, {
-    loading: true,
-    error: "",
-    order: {},
-  });
+  const [{ loading, error, order, successPay }, dispatch] = useReducer(
+    reducer,
+    {
+      loading: true,
+      error: "",
+      order: {},
+    }
+  );
 
   const {
     orderItems,
@@ -95,8 +97,11 @@ function Order({ params }) {
         dispatch({ type: "FETCH_FAIL", payload: getError(error) });
       }
     };
-    if (!order._id || (order._id && order._id !== orderId)) {
+    if (!order._id || successPay || (order._id && order._id !== orderId)) {
       fetchOrder();
+      if (successPay) {
+        dispatch({ type: "PAY_RESET" });
+      }
     } else {
       const loadPayPalScript = async () => {
         const { data: clientId } = await axios.get("/api/keys/paypal", {
@@ -110,7 +115,7 @@ function Order({ params }) {
       };
       loadPayPalScript();
     }
-  }, [order]);
+  }, [order, successPay]);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -152,7 +157,6 @@ function Order({ params }) {
 
   return (
     <Layouts title={`Order ${orderId}`}>
-      <CheckoutHelper activeStep={3}></CheckoutHelper>
       <Typography component="h1" variant="h1">
         Order {orderId}
       </Typography>
