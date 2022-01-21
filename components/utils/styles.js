@@ -44,6 +44,7 @@ export const myStyles = makeStyles({
     textAlign: "center",
   },
   form: {
+    width: "100%",
     maxWidth: 800,
     margin: "0 auto",
   },
