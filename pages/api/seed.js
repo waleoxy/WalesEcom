@@ -3,7 +3,7 @@ import { data } from "../../components/utils/data";
 import db from "../../components/utils/db";
 import userData from "../../components/utils/userData";
 import Product from "../../model/Product";
-import User from "../../model/user";
+import User from "../../model/User";
 
 const handler = nc();
 
