@@ -1,15 +1,14 @@
 import {
   Button,
-  Link,
   List,
   ListItem,
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import Layouts from "../components/Layouts";
 import { myStyles } from "../components/utils/styles";
-import NextLink from "next/link";
+// import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { Store } from "../components/utils/store";
 import Cookies from "js-cookie";
@@ -33,7 +32,7 @@ function Shipping() {
   } = state;
 
   const router = useRouter();
-  const { redirect } = router.query;
+  //const { redirect } = router.query;
 
   useEffect(() => {
     if (!userInfo) {

@@ -17,7 +17,7 @@ import { Store } from "../../components/utils/store";
 import { useContext } from "react";
 import { useRouter } from "next/router";
 
-export default function ProductScreen({ product, params }) {
+export default function ProductScreen({ product }) {
   const router = useRouter();
   const classes = myStyles();
   const { state, dispatch } = useContext(Store);
