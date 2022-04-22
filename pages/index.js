@@ -40,8 +40,7 @@ export default function Home({ products }) {
 
   return (
     <Layouts>
-      <div>
-        <h1>Row of list of featured products slide</h1>
+      <div className="mt-5">
         <Grid container spacing={3}>
           {products.map((product) => (
             <Grid item md={4} key={product.title}>

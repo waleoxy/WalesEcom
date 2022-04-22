@@ -27,8 +27,6 @@ function Layouts({ title, children, description }) {
   const { state, dispatch } = useContext(Store);
   const { darkMode, cart, userInfo } = state;
 
-  console.log("ui", userInfo);
-
   const theme = createTheme({
     typography: {
       h1: {

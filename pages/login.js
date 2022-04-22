@@ -27,7 +27,7 @@ function Login() {
     formState: { errors },
   } = useForm();
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { state, dispatch } = useContext(Store);
   const { userInfo } = state;
@@ -122,7 +122,7 @@ function Login() {
             </Button>
           </ListItem>
           <ListItem>
-            Don't have an account?
+            {"Don't have an account?"}
             <NextLink href={`/register?redirect=${redirect || "/"}`} passHref>
               <Link> Register</Link>
             </NextLink>
