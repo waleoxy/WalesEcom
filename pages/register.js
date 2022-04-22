@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import Layouts from "../components/Layouts";
 import { myStyles } from "../components/utils/styles";
 import NextLink from "next/link";
